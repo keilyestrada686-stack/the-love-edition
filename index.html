@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101216">
+<title>The Love Edition</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<section id="home" class="screen active hero" aria-label="The Love Edition main menu"><nav class="hero-inner" aria-label="Main menu"><button class="home-hotspot" onclick="enterGame()" aria-label="Start game"></button><button class="home-hotspot" onclick="enterGame()" aria-label="Missions"></button><button class="home-hotspot" onclick="toggleSound()" aria-label="Toggle sound"></button><button class="home-hotspot" onclick="showExtras()" aria-label="Extras"></button><button class="home-hotspot" onclick="show('home')" aria-label="Quit to title screen"></button></nav></section>
+<section id="game" class="screen">
+  <header class="topbar">
+    <div class="brand">THE LOVE <span>EDITION</span></div>
+    <div class="hud-stats">
+      <div class="hud-pill">PROGRESO <span id="pct">0%</span></div>
+      <div class="status">LIBERTY CITY // SAVE FILE</div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <div class="panel">
+      <div class="section-tag">MUNDO ABIERTO • NUESTRA HISTORIA </div>
+      <h1 class="heading">BIENVENIDO A <br>NUESTRA CIUDAD .</h1>
+      <p class="desc">Hay misiones que no aparecen en ningún mapa. Esta es una de ellas. Explora la ciudad y desbloquea cada recuerdo.</p>
+
+      <div class="map">
+        <div class="water"></div>
+        <span class="district" style="left:8%;top:20%">BROKE</span>
+        <span class="district" style="left:45%;top:42%">ALGONQUIN</span>
+        <span class="district" style="left:18%;top:75%">DUKES</span>
+
+        <button class="pin" data-label="01 • VIDEO" style="left:20%;top:36%" onclick="openMission(0)" aria-label="Video">▶</button>
+        <button class="pin" data-label="02 • SOUNDTRACK" style="left:56%;top:25%" onclick="openMission(1)" aria-label="Playlist">♫</button>
+        <button class="pin" data-label="03 • MEMORIES" style="left:43%;top:68%" onclick="openMission(2)" aria-label="Fotos">♥</button>
+        <button class="pin" data-label="04 • FINAL LETTER" style="left:78%;top:55%" onclick="openMission(3)" aria-label="Carta">★</button>
+
+        <div class="map-hud-overlay">GPS ACTIVADO • LIBERTY CITY RADAR</div>
+      </div>
+
+      <div class="desc" style="margin-top:12px">MAP MARKERS · Pasa el cursor o toca un punto naranja para iniciar una misión.</div>
+    </div>
+
+    <aside class="panel">
+      <div class="section-tag">MISIÓN SELECCIONADA</div>
+      <h2 class="heading">TÚ MISIÓN </h2>
+
+      <div class="missions">
+        <button class="mission" id="m0" onclick="openMission(0)">
+          <span class="num">01</span>
+          <span><strong>UN MENSAJE PARA TI </strong><small>VER VIDEO</small></span>
+          <span class="lock">▶</span>
+        </button>
+
+        <button class="mission" disabled id="m1" onclick="openMission(1)">
+          <span class="num">02</span>
+          <span><strong>NUESTRA PLAYLIST</strong><small>ESCUCHA NUESTRAS CANCIONES </small></span>
+          <span class="lock">🔒</span>
+        </button>
+
+        <button class="mission" disabled id="m2" onclick="openMission(2)">
+          <span class="num">03</span>
+          <span><strong>NUESTRAS MEMORIAS</strong><small>FOTOS</small></span>
+          <span class="lock">🔒</span>
+        </button>
+
+        <button class="mission" disabled id="m3" onclick="openMission(3)">
+          <span class="num">04</span>
+          <span><strong>FINAL DE LA MISIÓN </strong><small>UN ÚLTIMO MENSAJE </small></span>
+          <span class="lock">🔒</span>
+        </button>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="toast" id="progress" style="margin-top:0">MISIÓN 01 DISPONIBLE</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="footer">HECHO CON AMOR • EDICIÓN PERSONAL LIBERTY CITY</div>
+</section>
+<section id="mission" class="screen"><header class="topbar"><div class="brand">THE LOVE <span>EDITION</span></div><button class="back" onclick="show('game')">←  SALIR DE LA CIUDAD </button></header><main class="content"><div class="panel"><div class="section-tag" id="tag">MISIÓN 01</div><h1 class="heading" id="title">UN MENSAJE PARA TI </h1><p class="desc" id="description">UN MENSAJE ECHO CON TODO EL CORAZÓN PARA TI .</p><div id="body"></div><div id="complete"></div></div></main></section>
+<button class="sound" id="sound" onclick="toggleSound()">♫ SOUND: OFF</button>
+<script>
+// PERSONALIZA ESTOS DATOS: pega tus enlaces y cambia el texto de la carta.
+const VIDEO_URL='videos/mi-video.mp4';
+
+const SPOTIFY_URL='https://open.spotify.com/playlist/2FpgUDX8tKqBIT7ToHalTD'; 
+
+const MEMORIES = [
+  {
+    foto: 'photos/recuerdo-01.jpeg',
+    texto: 'Nuestra Primera Salida y final del mundial❤️ \n\n Ame cada segundo de esa Cita, fue la primera vez que me senti tan amada y por primera vez senti algo que nunca habia sentido jamas....\n\n que por fin había encontrado con quien queria compartir el resto de mi vida...'
+  },
+ 
+   {
+    foto: 'photos/recuerdo-02.jpeg',
+    texto: 'Salida a Antigua... Ese dia lo amé porque nunca habia ido a una cita a la antigua..\n\n y sabes, me gustó habernos perdido un poco en el mercado JAJAJ y haber ido a tomar el café en Starbucks😍'
+  },
+
+  {
+    foto: 'photos/recuerdo-04.jpeg',
+    texto: 'Amor de Bebé eras super adorable, en serio re lindo mi niño, te amoooo... \n\n me dash un bebé así como tú, shiii 😍🙈'
+  },
+
+  {
+    foto: 'photos/recuerdo-05.jpeg',
+    texto: 'Dolar... en esta salida ocurrieron varias cosas y tooodas re buenas JAJAJ..... Nunca jamas iré al Dolar sin recordar todo lo que vivimos ese dia, te adoro bebé 😍'
+  },
+
+  {
+    foto: 'photos/recuerdo-07.jpeg',
+    texto: 'Nuestro rincon escondido para ir a comer pizza, me gusta cada cita que tenemos, pero me gusta cada vez que vamos a ese lugar porque, somos solos tu y yo sin que nadie nos esté viendo ni molestando, siento que es un lugar muy especial en donde podemos hablar y comer, solo me encanta donde sea mientras estes tú a mi lado...'
+  },
+
+  {
+    foto: 'photos/recuerdo-08.jpeg',
+    texto: 'Desde Peque te ha gustado la música, no solo te gusta te apasiona y me fascina cada vez que te escucho hablar sobre musica, ver como te brillan tus ojitos y eres feliz haciendo lo que te gusta.... '
+  },
+
+  {
+    foto: 'photos/recuerdo-09.jpeg',
+    texto: 'CEMACO, algo que siempre recordaré y un momento que marco mucho mi vida, sin duda es este, porque yo se que para realizar todo lo que hablamos ese dia falta mucho, pero fue super lindo hablar de eso y pensar a futuro contigo, te amo, en serio te amo Anderson Ivan Anona Mazate'
+  }
+
+];
+
+const LETTER=`Holaaaaa mi cielitooo, si llegaste hasta este mensaje es porque completaste todas las misiones con esto, yo se que tu querias el GTA VI y pues no pude dartelo, se que este juego no es lo mismo, es una version nada que ver JAJAJAJ.\n\nPero te juro que lo hice con todo mi amor, cada palabra, cada recuerdo, cada canción salio totalmente de mi corazon...\n\nNo sabes lo importante que eres para mi, eres un niño super inteligente nunca dejes de ser tan fuerte y valiente como lo eres ahora, se que no siempre lo eres, pero siempre puedes lograr lo que te propones, y me siento tan orgullosa de ti como persona y tambien de tenerte en mi vida....\n\nEn serio amor nunca cambies tu manera de ser, espero que sigas cumpliendo muchisimos años mas de vida y que sigamos compartiendo nuestra vida hasta que seamos viejitos y cumplir todos nuestros sueños juntos ..\n\nTE AMO IVANCITO ERES MI PERSONA FAVORITA EN TODO EL MUNDO, MI RAZON DE SER TE AMO MY DREAM ❤️❤️❤️❤️❤️`;
+let unlocked=0, soundOn=false, audioCtx=null;
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function enterGame(){show('game');beep(520,.09)}
+function showExtras(){show('game');document.getElementById('progress').textContent='EXTRAS // MORE MEMORIES WAIT TO BE ADDED';beep(660,.1)}
+function beep(freq=440,duration=.08){if(!soundOn)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=freq;g.gain.setValueAtTime(.045,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);o.start();o.stop(audioCtx.currentTime+duration)}catch(e){}}
+function toggleSound(){soundOn=!soundOn;document.getElementById('SONIDO').textContent='♫ SONIDO: '+(soundOn?'ON':'OFF');beep(600,.1)}
+const titles=['UN MENSAJE PARA TI','NUESTRAS CANCIONES','NUESTRAS MEMORIAS','FINAL DE LA MISION'];
+const descriptions=['Una sorpresa audiovisual que preparé para ti.','La música que me recuerda a nosotros.','Pequeños momentos que quiero guardar para siempre.','Has llegado al final. Hay algo que quiero decirte.'];
+function openMission(i){if(i>unlocked)return;beep(420+i*90);document.getElementById('tag').textContent='MISSION 0'+(i+1)+' • IN PROGRESS';document.getElementById('title').textContent=titles[i];document.getElementById('description').textContent=descriptions[i];let b=document.getElementById('body'),c=document.getElementById('complete');c.innerHTML='';
+if(i===0){let embed=VIDEO_URL?videoEmbed(VIDEO_URL):'';b.innerHTML='<div class="media">'+(embed||'<div style="padding:24px;text-align:center">🎬<br><br><b>YOUR VIDEO GOES HERE</b><br><small>Add your video link in VIDEO_URL inside the code.</small></div>')+'</div>';}
+if(i===1){let url=SPOTIFY_URL?spotifyEmbed(SPOTIFY_URL):'';b.innerHTML='<div class="media">'+(url||'<div style="padding:24px;text-align:center">♫<br><br><b>OUR SOUNDTRACK</b><br><small>Add your Spotify playlist link in SPOTIFY_URL inside the code.</small></div>')+'</div>'}
+
+if(i===2){
+  const validas = MEMORIES.filter(m => m.foto && !m.foto.includes('PEGA_AQUI_EL_ENLACE_DE_TU_FOTO'));
+  b.innerHTML = validas.length
+    ? '<div class="polaroid-grid">' + validas.map(m =>
+        '<div class="polaroid-card">' +
+          '<img src="' + escapeAttr(m.foto) + '" alt="Recuerdo">' +
+          '<div class="polaroid-caption">' + escapeHtml(m.texto || '') + '</div>' +
+        '</div>'
+      ).join('') + '</div>'
+    : '<div class="media"><div style="padding:24px;text-align:center">📷<br><br><b>POLAROID ARCHIVE</b><br><small>Pega el enlace de tu foto y tu texto en MEMORIES dentro del código.</small></div></div>';
+}
+
+if(i===3){b.innerHTML='<div class="letter">'+escapeHtml(LETTER)+'</div><div class="secret"><div class="section-tag">SECRETO DESBLOQUEADO </div><h3>ERES MI JUGADOR FAVORITO .</h3><p class="desc">Gracias por jugar esta aventura conmigo. Mi misión favorita siempre será elegirte. ❤️</p></div>'}
+c.innerHTML='<button class="start" onclick="finishMission('+i+')">'+(i===3?'VOLVER A LA CIUDAD':'MISIÓN COMPLETADA')+' &nbsp; ▶</button>'+(i===3?'<div class="desc" style="margin-top:12px">MISIÓN COMPLETADA · GRACIAS POR JUGAR </div>':'');show('mission')}
+
+function finishMission(i){
+  let currentCard = document.getElementById('m' + i);
+  if (currentCard) {
+    currentCard.classList.add('done');
+    currentCard.querySelector('.lock').textContent = '✓';
+  }
+  let percent = Math.min(100, (i + 1) * 25);
+  let pctEl = document.getElementById('pct');
+  let barEl = document.getElementById('progressBar');
+  if (pctEl) pctEl.textContent = percent + '%';
+  if (barEl) barEl.style.width = percent + '%';
+
+  if(i===3){
+    show('game');
+    document.getElementById('progress').textContent='ALL MISSIONS COMPLETE • 100%';
+    beep(760,.2);
+    return;
+  }
+  unlocked=Math.max(unlocked,i+1);
+  let next=document.getElementById('m'+(i+1));
+  if(next){
+    next.disabled=false;
+    if(!next.classList.contains('done')) next.querySelector('.lock').textContent='▶';
+  }
+  document.getElementById('progress').textContent='MISSION 0'+(i+2)+' UNLOCKED';
+  show('game');
+  beep(720,.16);
+}
+
+function videoEmbed(url){let id='';try{let u=new URL(url);if(u.hostname.includes('youtu.be'))id=u.pathname.slice(1);else if(u.hostname.includes('youtube.com'))id=u.searchParams.get('v')||u.pathname.split('/').filter(Boolean).pop();}catch(e){}return id?'<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'" title="Your video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>':'<video controls playsinline src="'+escapeAttr(url)+'"></video>'}
+function spotifyEmbed(url){try{let u=new URL(url);let parts=u.pathname.split('/').filter(Boolean);let type=parts[0],id=parts[1];if(!['playlist','album','track'].includes(type)||!id)return '';return '<iframe src="https://open.spotify.com/embed/'+type+'/'+encodeURIComponent(id)+'?utm_source=generator&theme=0" height="352" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>'}catch(e){return ''}}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function escapeAttr(s){return escapeHtml(s)}
+</script></body></html>
